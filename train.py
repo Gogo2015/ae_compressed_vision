@@ -57,10 +57,8 @@ def train(dataloader, model_name, codebook_length, device, model_exist, is_show,
 
     if (model_exist == True):
         modelpth = torch.load(model_path)
-        for key in modelpth:
-            print(key)
-        print(modelpth['model_state_dict'].centroids)
-        codebook_length = len([obj['centroids'] for obj in modelpth])
+        print(len(modelpth['centroids']))
+        codebook_length = len(modelpth['centroids'])
         model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
         model.load_state_dict(modelpth)
         print("Model Loaded")
