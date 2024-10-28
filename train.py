@@ -57,7 +57,6 @@ def train(dataloader, model_name, codebook_length, device, model_exist, is_show,
 
     if (model_exist == True):
         modelpth = torch.load(model_path)
-        print(len(modelpth['centroids']))
         codebook_length = len(modelpth['centroids'])
         model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
         model.load_state_dict(modelpth)
@@ -65,7 +64,6 @@ def train(dataloader, model_name, codebook_length, device, model_exist, is_show,
     else:
         model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
     
-
     loss_fn = nn.MSELoss() #Intialize Loss Function
     optimizer = torch.optim.Adam(model.parameters(), lr = 0.001, betas=(0.9,0.999)) #Intialize Adam Optimizer for model weights
 
