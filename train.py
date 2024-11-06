@@ -63,8 +63,8 @@ def train(dataloader, model_name, device, model_exist, is_show, epochs, batch_si
         model.load_state_dict(modelpth)
         print("Model Loaded")
     else:
-        print("Length of codebook? ")
-        codebook_length = int(sys.argv[1])
+        print("Creating new model")
+        codebook_length = int(input("Length of codebook? "))
         model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
     
     loss_fn = nn.MSELoss() #Intialize Loss Function
