@@ -24,7 +24,8 @@ def test(dataloader, model_name, codebook_length, device, is_show, batch_size):
 
         model_path = os.path.join('models', model_name)
         model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
-        print(len(model_path['centroids']))
+        model_pth = torch.load(model_path)
+        print(len(model_pth['centroids']))
         model.load_state_dict(torch.load(model_path))
 
         loss_fn = nn.MSELoss() #Intialize Loss Function
