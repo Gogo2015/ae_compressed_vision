@@ -9,7 +9,7 @@ from datetime import timedelta
 
 
 #Test Method to test Accuracy of Model's Predictions
-def test(dataloader, model_name, codebook_length, device, is_show, batch_size):
+def test(dataloader, model_name, device, is_show, batch_size):
     model_name = model_name + '.pth'
     with torch.no_grad(): 
         num_testBatches = 5 #int(2000/batch_size) #How Many Batches to Run Through, Max = 2,000
@@ -23,9 +23,9 @@ def test(dataloader, model_name, codebook_length, device, is_show, batch_size):
 
 
         model_path = os.path.join('models', model_name)
-        model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
         model_pth = torch.load(model_path)
-        print(len(model_pth['centroids']))
+        codebook_length = len(model_pth['centroids'])
+        model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
         model.load_state_dict(torch.load(model_path))
 
         loss_fn = nn.MSELoss() #Intialize Loss Function

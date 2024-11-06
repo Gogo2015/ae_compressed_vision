@@ -4,6 +4,7 @@ import torch.nn as nn
 from autoencoder import Autoencoder
 import os
 from show import show
+import sys
 
 def train_epoch(dataloader, model, loss_fn, optimizer, device, train_batches, is_show):
     #Initialize Vars
@@ -46,7 +47,7 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, train_batches, is
             break
 
 
-def train(dataloader, model_name, codebook_length, device, model_exist, is_show, epochs, batch_size):
+def train(dataloader, model_name, device, model_exist, is_show, epochs, batch_size):
     in_channels = 1
     losses = []
     train_batches = int(8000/batch_size)
@@ -62,6 +63,8 @@ def train(dataloader, model_name, codebook_length, device, model_exist, is_show,
         model.load_state_dict(modelpth)
         print("Model Loaded")
     else:
+        print("Length of codebook? ")
+        codebook_length = int(sys.argv[1])
         model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
     
     loss_fn = nn.MSELoss() #Intialize Loss Function

@@ -44,7 +44,6 @@ print(f"Using {device} device")
 
 #Call Main Function
 model_exist = False
-codebook_length = 128
 epochs = 20
 function_run = sys.argv[1]
 model_name = sys.argv[2]
@@ -80,18 +79,18 @@ while True:
     if function_run == 'train':
         is_show = False
         epochs = int(sys.argv[3])
-        train(train_loader, model_name, codebook_length, device, model_exist, is_show, epochs, batch_size)
+        train(train_loader, model_name, device, model_exist, is_show, epochs, batch_size)
     elif function_run == 'testTrain':
         is_show = True
         epochs = 1
-        train(train_loader, model_name, codebook_length, device, model_exist, is_show, epochs, batch_size)
+        train(train_loader, model_name, device, model_exist, is_show, epochs, batch_size)
     elif function_run == 'showtrain':
         is_show = True
         epochs = int(sys.argv[3])
-        train(train_loader, model_name, codebook_length, device, model_exist, is_show, epochs, batch_size)
+        train(train_loader, model_name, device, model_exist, is_show, epochs, batch_size)
     elif function_run == 'test':
         is_show = True
-        test(test_loader, model_name, codebook_length, device, is_show, batch_size)
+        test(test_loader, model_name, device, is_show, batch_size)
     elif function_run == 'train-rate-distortion':
         codebook_vals = [2, 4, 8, 16, 32, 64,128]
         train_rate_distortion(train_loader, test_loader, model_name, codebook_vals[curr_ind], device, batch_size)
