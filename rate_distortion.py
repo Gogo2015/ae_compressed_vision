@@ -7,7 +7,7 @@ from datetime import timedelta
 def train_rate_distortion(train_loader, test_loader, model_name, codebook_length, device, batch_size):
     
     is_show = False
-    epochs = 1
+    epochs = 5
     model_exist = False
     first = True
     last_loss = 1000000
@@ -33,8 +33,8 @@ def train_rate_distortion(train_loader, test_loader, model_name, codebook_length
         else:
             model_exist = True
             last_loss = curr_loss
-        train_loss = train(train_loader, model_codename, codebook_length, device, model_exist, is_show, epochs, batch_size)
-        curr_loss = test(test_loader, model_codename, codebook_length, device, is_show, batch_size)
+        train_loss = train(train_loader, model_codename, device, model_exist, is_show, epochs, batch_size)
+        curr_loss = test(test_loader, model_codename, device, is_show, batch_size)
         if (last_loss_increase and curr_loss > last_loss):
             overfit = True
         elif (curr_loss > last_loss):
@@ -53,7 +53,8 @@ def show_rate_distortion(test_loader, model_name, codebook_length, device, batch
     is_show = False
     
     model_codename = model_name + str(codebook_length)
-    loss = test(test_loader, model_codename, codebook_length, device, is_show, batch_size) 
+    print("Model Name: " + model_codename)
+    loss = test(test_loader, model_codename, device, is_show, batch_size) 
     return loss
 
 

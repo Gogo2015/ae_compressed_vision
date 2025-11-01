@@ -4,6 +4,7 @@ import torch.nn as nn
 from autoencoder import Autoencoder
 import os
 from show import show
+import sys
 
 def train_epoch(dataloader, model, loss_fn, optimizer, device, train_batches, is_show):
     #Initialize Vars
@@ -11,6 +12,7 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, train_batches, is
 
     #Iterating Through Dataloader
     for (batch_num, batch) in enumerate(dataloader):
+        #print ("Batch: " + str(batch_num), end="")
         #Convert Int8 Tensor to NP-usable Float32
         batch = batch.to(device, dtype = torch.float32)
 
@@ -27,6 +29,7 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, train_batches, is
         #Calculate Loss
         loss = loss_fn(reconstructed, batch)
         avg_loss += loss.item()/train_batches
+        #print ("Loss: " + str(loss.item()))
 
         #Backpropagate
         # The gradients are set to zero, the gradient is computed and stored.
@@ -44,7 +47,7 @@ def train_epoch(dataloader, model, loss_fn, optimizer, device, train_batches, is
             break
 
 
-def train(dataloader, model_name, codebook_length, device, model_exist, is_show, epochs, batch_size):
+def train(dataloader, model_name, device, model_exist, is_show, epochs, batch_size):
     in_channels = 1
     losses = []
     train_batches = int(8000/batch_size)
@@ -53,11 +56,17 @@ def train(dataloader, model_name, codebook_length, device, model_exist, is_show,
     model_name = model_name + '.pth'
     model_path = os.path.join('models', model_name)
 
-    model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
     if (model_exist == True):
-        model.load_state_dict(torch.load(model_path))
+        modelpth = torch.load(model_path)
+        codebook_length = len(modelpth['centroids'])
+        model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
+        model.load_state_dict(modelpth)
         print("Model Loaded")
-
+    else:
+        print("Creating new model")
+        codebook_length = int(input("Length of codebook? "))
+        model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
+    
     loss_fn = nn.MSELoss() #Intialize Loss Function
     optimizer = torch.optim.Adam(model.parameters(), lr = 0.001, betas=(0.9,0.999)) #Intialize Adam Optimizer for model weights
 
@@ -73,10 +82,10 @@ def train(dataloader, model_name, codebook_length, device, model_exist, is_show,
         else:
             avg_loss = train_epoch(dataloader, model, loss_fn, optimizer, device, train_batches, is_show)
         losses.append(avg_loss)
-    torch.save(model.state_dict(), model_path)
-    print("Saved Model")
+        torch.save(model.state_dict(), model_path)
+        print("Saved Model")
 
-    del model
+    #del model
     if is_show:
         show(original_batches, reconstructed_batches)
         # Plotting the loss function
@@ -86,4 +95,4 @@ def train(dataloader, model_name, codebook_length, device, model_exist, is_show,
         plt.title('Training Loss')
         plt.show()
     else:
-        return avg_loss
+        return sum(losses)/len(losses)

@@ -4,22 +4,27 @@ import torch.nn as nn
 from autoencoder import Autoencoder
 from show import show
 import os
+import time
+from datetime import timedelta
 
 
 #Test Method to test Accuracy of Model's Predictions
-def test(dataloader, model_name, codebook_length, device, is_show, batch_size):
+def test(dataloader, model_name, device, is_show, batch_size):
     model_name = model_name + '.pth'
     with torch.no_grad(): 
-        num_testBatches = 1 #int(2000/batch_size) #How Many Batches to Run Through, Max = 2,000
-        num_videos_show = 1 # 10 #How many Videos to Show at End
+        num_testBatches = int(2000/batch_size) #How Many Batches to Run Through, Max = 2,000
+        num_videos_show = 10 #How many Videos to Show at End
         num_every_video = num_testBatches/num_videos_show #Take a batch per # batches
         original_batches = []
         reconstructed_batches = []
         avg_loss = 0
+        avg_lossEval = 0
         in_channels = 1  # Assuming grayscale video frames
 
 
         model_path = os.path.join('models', model_name)
+        model_pth = torch.load(model_path)
+        codebook_length = len(model_pth['centroids'])
         model = Autoencoder(in_channels, codebook_length, device, batch_size).to(device) #Intialize Model
         model.load_state_dict(torch.load(model_path))
 
@@ -38,7 +43,11 @@ def test(dataloader, model_name, codebook_length, device, is_show, batch_size):
             batch = torch.permute(batch, (0,2,1,3,4))
 
             # Output of Autoencoder
+            start = time.perf_counter()
             reconstructed = model(batch)
+            end = time.perf_counter()
+
+            print("Time Elapsed: " + str(timedelta(seconds = end-start)))
 
             #Calculate Loss
             loss = loss_fn(reconstructed, batch).item()
