@@ -2,7 +2,7 @@
 
 This repository contains the implementation and results from my research on a **quantized convolutional autoencoder** for video compression. The model compresses short grayscale video sequences into discrete latent codes using a tunable quantization codebook, enabling control over bitrate and reconstruction fidelity. This project explores the classic rate–distortion trade-off in neural video compression.
 
-📄 **[Read the full IEEE-style technical paper (AutoencoderPaper.pdf)](./AutoencoderPaper.pdf)**  
+[Read the full technical paper (PDF)](https://github.com/Gogo2015/ae_compressed_vision/blob/main/AutoencoderPaper.pdf)
 *Author: Gaurav Mitra (University of Texas at Austin)*
 
 ## Overview
